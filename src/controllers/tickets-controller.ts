@@ -12,8 +12,8 @@ async function list(req: Request, res: Response) {
 
 async function listTickets(req: AuthenticatedRequest, res: Response) {
     const tickets = await ticketService.getTickets(req.userId)
-    if (tickets.length === 0) return res.sendStatus(httpStatus.NOT_FOUND)
-    res.send(tickets[0]);
+    if (tickets === null) return res.sendStatus(httpStatus.NOT_FOUND)
+    res.send(tickets);
 }
 
 async function create(req: AuthenticatedRequest, res: Response) {

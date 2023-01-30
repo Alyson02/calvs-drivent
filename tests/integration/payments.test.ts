@@ -207,7 +207,7 @@ describe("POST /payments/process", () => {
         ticketId: ticket.id,
         value: ticketType.price,
         cardIssuer: body.cardData.issuer,
-        cardLastDigits: body.cardData.number.slice(-4),
+        cardLastDigits: body.cardData.number.toString().slice(-4),
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
       });
@@ -239,7 +239,7 @@ describe("POST /payments/process", () => {
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
 
       const body = { ticketId: ticket.id, cardData: generateCreditCardData() };
-      await server.post("/payments/process").set("Authorization", `Bearer ${token}`).send(body);
+      const res =await server.post("/payments/process").set("Authorization", `Bearer ${token}`).send(body);
 
       const updatedTicket = await prisma.ticket.findUnique({ where: { id: ticket.id } });
 
