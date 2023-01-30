@@ -19,8 +19,8 @@ async function upsert(
     where: {
       userId,
     },
-    create: createdEnrollment,
-    update: updatedEnrollment,
+    create: { ...createdEnrollment, birthday: new Date(createdEnrollment.birthday.toString()) },
+    update: { ...updatedEnrollment, birthday: new Date(createdEnrollment.birthday.toString()) },
   });
 }
 

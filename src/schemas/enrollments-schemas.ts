@@ -11,7 +11,7 @@ const mobilePhoneValidationSchema = Joi.string().min(14).max(15).custom(joiMobil
 export const createEnrollmentSchema = Joi.object<CreateOrUpdateEnrollmentWithAddress>({
   name: Joi.string().min(3).required(),
   cpf: cpfValidationSchema,
-  birthday: Joi.string().isoDate().required(),
+  birthday: Joi.date().required(),
   phone: mobilePhoneValidationSchema,
   address: Joi.object({
     cep: cepValidationSchema,
