@@ -1,53 +1,31 @@
-import { notFoundError } from "@/errors";
-import ticketRepository from "@/repositories/ticket-repository";
-import enrollmentRepository from "@/repositories/enrollment-repository";
-import { TicketStatus } from "@prisma/client";
+import ticketRepository, { TicketResponse } from "@/repositories/ticket-repository";
+import { Ticket, TicketType } from "@prisma/client";
+import enrollmentsService from "@/services/enrollments-service";
 
-async function getTicketTypes() {
-  const ticketTypes = await ticketRepository.findTicketTypes();
-
-  if (!ticketTypes) {
-    throw notFoundError();
-  }
-  return ticketTypes;
+async function list(): Promise<TicketType[]> {
+  return await ticketRepository.list();
 }
 
-async function getTicketByUserId(userId: number) {
-  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
-  if (!enrollment) {
-    throw notFoundError();
-  }
-  const ticket = await ticketRepository.findTicketByEnrollmentId(enrollment.id);
-  if (!ticket) {
-    throw notFoundError();
-  }
-
-  return ticket;
+async function getTickets(userId: number): Promise<TicketResponse> {
+  return await ticketRepository.listTickets(userId);
 }
 
-async function createTicket(userId: number, ticketTypeId: number) {
-  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
-  if (!enrollment) {
-    throw notFoundError();
-  }
+async function create(body: CreateTicketParams, userId: number): Promise<Ticket> {
+  const enrollment = await enrollmentsService.getOneWithAddressByUserId(userId);
 
-  const ticketData = {
-    ticketTypeId,
+  const ticket: Partial<Ticket> = {
+    ticketTypeId: body.ticketTypeId,
     enrollmentId: enrollment.id,
-    status: TicketStatus.RESERVED
-  };
+    status: "RESERVED"
+  }
 
-  await ticketRepository.createTicket(ticketData);
-
-  const ticket = await ticketRepository.findTicketByEnrollmentId(enrollment.id);
-
-  return ticket;
+  return await ticketRepository.create(ticket)
 }
 
-const ticketService = {
-  getTicketTypes,
-  getTicketByUserId,
-  createTicket
-};
+export default {
+  list,
+  getTickets,
+  create
+}
 
-export default ticketService;
+export type CreateTicketParams = Pick<Ticket, "ticketTypeId">

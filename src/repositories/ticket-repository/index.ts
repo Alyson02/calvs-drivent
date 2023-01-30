@@ -26,7 +26,7 @@ async function create(ticket: Partial<Ticket>): Promise<Ticket> {
 }
 
 async function paidTicket(id: number): Promise<void> {
-    await prisma.ticket.update({ where: { id: id }, data: {status: "PAID"} })
+    await prisma.ticket.update({ where: { id: id }, data: { status: "PAID" } })
 }
 
 export default {
