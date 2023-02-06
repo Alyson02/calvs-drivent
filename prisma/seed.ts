@@ -16,6 +16,16 @@ async function main() {
     });
   }
 
+  let hotel = await prisma.hotel.findFirst();
+  if (!hotel) {
+    hotel = await prisma.hotel.create({
+      data: {
+        name: "Hotel Emporio Acapulco",
+        image: "https://i0.wp.com/mundosemfim.com/wp-content/uploads/2017/11/DSC_0110.jpg?w=800"
+      }
+    });
+  }
+
   console.log({ event });
 }
 
