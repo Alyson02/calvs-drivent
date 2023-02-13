@@ -6,7 +6,11 @@ async function list(): Promise<TicketType[]> {
 }
 
 async function listTickets(userId: number): Promise<TicketResponse> {
-    return await prisma.ticket.findFirst({ include: { TicketType: true }, where: { Enrollment: { userId: userId } } });
+    return await prisma.ticket.findFirst({
+        include: { TicketType: true },
+        where: { Enrollment: { userId: userId } },
+        orderBy: { id: "desc" }
+    });
 }
 
 export type TicketResponse = Ticket & {

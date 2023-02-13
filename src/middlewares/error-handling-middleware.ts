@@ -39,6 +39,12 @@ export function handleApplicationErrors(err: ApplicationError | Error, _req: Req
     })
   }
 
+  if (err.name === "forbiddenError") {
+    return res.status(httpStatus.FORBIDDEN).send({
+      message: err.message
+    })
+  }
+
   /* eslint-disable-next-line no-console */
   console.error(err.name);
   res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
